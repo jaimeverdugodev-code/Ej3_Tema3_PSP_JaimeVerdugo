@@ -14,7 +14,8 @@ RUN chmod +x gradlew
 RUN ./gradlew build -x test
 
 # Copiar el JAR generado a un nombre fijo
-COPY build/libs/*.jar app.jar
+COPY build/libs/*-boot.jar app.jar
+
 
 # Exponer el puerto de la app
 EXPOSE 8080
