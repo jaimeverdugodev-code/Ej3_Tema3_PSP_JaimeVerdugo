@@ -1,24 +1,17 @@
-# Usar JDK 21 Alpine
-FROM eclipse-temurin:21-jdk-alpine
-
-# Directorio de trabajo
+# Etapa 1: build
+FROM eclipse-temurin:21-jdk-alpine AS builder
 WORKDIR /app
 
-# Copiar todos los archivos del proyecto al contenedor
 COPY . .
 
-# Dar permisos de ejecución a gradlew
 RUN chmod +x gradlew
+RUN ./gradlew bootJar -x test
 
-# Construir la app usando Gradle
-RUN ./gradlew build -x test
+# Etapa 2: runtime
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
 
-# Copiar el JAR generado a un nombre fijo
-COPY build/libs/*-boot.jar app.jar
+COPY --from=builder /app/build/libs/*.jar app.jar
 
-
-# Exponer el puerto de la app
 EXPOSE 8080
-
-# Comando para iniciar la app
 ENTRYPOINT ["java", "-jar", "app.jar"]
