@@ -14,18 +14,22 @@ class CamisaService(
     private val tipoRepo: TipoCamisaRepository
 ) {
     @Transactional(readOnly = true)
-    fun list(): List<Camisa> = repo.findAll().sortedBy { it.id }
+    fun list(): List<Camisa> = repo.findAllWithTipo().sortedBy { it.id }
 
     @Transactional(readOnly = true)
     fun get(id: Long): Camisa =
-        repo.findById(id).orElseThrow { NotFoundException("Camisa id=$id no encontrada") }
+        repo.findByIdWithTipo(id) ?: throw NotFoundException("Camisa id=$id no encontrada")
 
     @Transactional
     fun create(req: CamisaRequest): Camisa {
         val tipo = tipoRepo.findById(req.tipoId).orElseThrow {
             NotFoundException("Tipo id=${req.tipoId} no encontrado")
         }
-        return repo.save(CamisaMapper.toEntity(req, tipo))
+        val saved = repo.save(CamisaMapper.toEntity(req, tipo))
+        // Forzar inicialización de tipo
+        saved.tipo.nombre
+        saved.tipo.descripcion
+        return saved
     }
 
     @Transactional
@@ -34,7 +38,10 @@ class CamisaService(
         val tipo = tipoRepo.findById(req.tipoId).orElseThrow {
             NotFoundException("Tipo id=${req.tipoId} no encontrado")
         }
-        return repo.save(CamisaMapper.merge(current, req, tipo))
+        val updated = repo.save(CamisaMapper.merge(current, req, tipo))
+        updated.tipo.nombre
+        updated.tipo.descripcion
+        return updated
     }
 
     @Transactional
