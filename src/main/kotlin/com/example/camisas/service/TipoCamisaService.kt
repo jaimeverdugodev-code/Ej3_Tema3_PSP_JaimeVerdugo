@@ -10,36 +10,29 @@ import org.springframework.transaction.annotation.Transactional
 class TipoCamisaService(
     private val repo: TipoCamisaRepository
 ) {
-
     @Transactional(readOnly = true)
-    fun list(): List<TipoCamisa> = repo.findAllTipos().sortedBy { it.id }
+    fun list(): List<TipoCamisa> = repo.findAll().sortedBy { it.id }
 
     @Transactional(readOnly = true)
     fun get(id: Long): TipoCamisa =
-        repo.findByIdTipo(id) ?: throw NotFoundException("TipoCamisa id=$id no encontrada")
+        repo.findById(id).orElseThrow { NotFoundException("Tipo id=$id no encontrado") }
 
     @Transactional
     fun create(req: TipoCamisaRequest): TipoCamisa {
-        val entity = TipoCamisa(
-            nombre = req.nombre,
-            descripcion = req.descripcion
-        )
-        return repo.save(entity)
+        if (repo.existsByNombreIgnoreCase(req.nombre))
+            throw IllegalArgumentException("Ya existe un tipo con nombre '${req.nombre}'")
+        return repo.save(TipoCamisa(nombre = req.nombre.trim(), descripcion = req.descripcion))
     }
 
     @Transactional
     fun update(id: Long, req: TipoCamisaRequest): TipoCamisa {
         val current = get(id)
-        val updated = current.copy(
-            nombre = req.nombre,
-            descripcion = req.descripcion
-        )
-        return repo.save(updated)
+        return repo.save(current.copy(nombre = req.nombre.trim(), descripcion = req.descripcion))
     }
 
     @Transactional
     fun delete(id: Long) {
-        if (!repo.existsById(id)) throw NotFoundException("TipoCamisa id=$id no encontrada")
+        if (!repo.existsById(id)) throw NotFoundException("Tipo id=$id no encontrado")
         repo.deleteById(id)
     }
 }
