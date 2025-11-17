@@ -14,11 +14,11 @@ class CamisaService(
     private val tipoRepo: TipoCamisaRepository
 ) {
     @Transactional(readOnly = true)
-    fun list(): List<Camisa> = repo.findAll().sortedBy { it.id }
+    fun list(): List<Camisa> = repo.findAllWithTipo().sortedBy { it.id }
 
     @Transactional(readOnly = true)
     fun get(id: Long): Camisa =
-        repo.findById(id).orElseThrow { NotFoundException("Camisa id=$id no encontrada") }
+        repo.findByIdWithTipo(id) ?: throw NotFoundException("Camisa id=$id no encontrada")
 
     @Transactional
     fun create(req: CamisaRequest): Camisa {
