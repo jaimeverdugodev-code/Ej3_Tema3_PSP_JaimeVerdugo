@@ -3,7 +3,7 @@ INSERT INTO tipos_camisa (id, nombre, descripcion) VALUES
 (2, 'Camiseta', 'Tejido jersey, cuello redondo'),
 (3, 'Lino',     'Ligera y transpirable para verano'),
 (4, 'Polo',     'Piqué con cuello y botones')
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 INSERT INTO camisas (nombre, talla, color, precio, imagen_url, lat, lng, tipo_id) VALUES
 ('Oxford Azul', 'M', 'Azul', 39.99, NULL, NULL, NULL, 1),
