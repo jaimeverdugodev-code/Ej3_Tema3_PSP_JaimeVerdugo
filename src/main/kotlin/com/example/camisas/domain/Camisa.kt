@@ -7,7 +7,7 @@ import java.math.BigDecimal
 @Table(name = "camisas")
 data class Camisa(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0L,
 
     @Column(nullable = false, length = 120)
     val nombre: String,

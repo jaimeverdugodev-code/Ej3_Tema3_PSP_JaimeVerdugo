@@ -6,7 +6,7 @@ import jakarta.persistence.*
 @Table(name = "tipos_camisa")
 data class TipoCamisa(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0L,
 
     @Column(nullable = false, unique = true, length = 100)
     val nombre: String,

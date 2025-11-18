@@ -19,7 +19,7 @@ object CamisaMapper {
     )
 
     fun toResponse(c: Camisa) = CamisaResponse(
-        id = c.id!!,
+        id = c.id,
         nombre = c.nombre,
         talla = c.talla,
         color = c.color,
@@ -28,7 +28,7 @@ object CamisaMapper {
         lat = c.lat,
         lng = c.lng,
         tipo = TipoCamisaResponse(
-            id = c.tipo.id!!,
+            id = c.tipo.id,
             nombre = c.tipo.nombre,
             descripcion = c.tipo.descripcion
         )
